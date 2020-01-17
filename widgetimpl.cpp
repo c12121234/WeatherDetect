@@ -3,6 +3,7 @@
 #include "areafactory.h"
 #include "IArea.h"
 #include "judgepic.h"
+#include "connectmethod.h"
 #include <QMessageBox>
 #include <vector>
 #include <QDebug>
@@ -55,16 +56,10 @@ void WidgetImpl::SettingAPIString()
 
 void WidgetImpl::TransferWeatherAPI(const QString &strAPI)
 {
-    QNetworkAccessManager* pManager = new QNetworkAccessManager(this);
-    QNetworkRequest request;
-    request.setUrl(QUrl(strAPI));
-    QNetworkReply* pReply = pManager->get(request);
-    connect(pReply,QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error),
-            [=](QNetworkReply::NetworkError code){
-        qDebug()<<code;
-    });
-    connect(pReply,&QNetworkReply::finished,this,&WidgetImpl::HandleReplyFinished);
-    connect(pManager,&QNetworkAccessManager::finished,pManager,&QObject::deleteLater);
+    ConnectMethod* pMethod = new EncryptMethod(this);
+    //or use NoEncryptMethod for http
+    connect(pMethod,&ConnectMethod::SendReply,this,&WidgetImpl::HandleReplyFinished);
+    pMethod->RunMethod(strAPI);
 }
 
 void WidgetImpl::JSONParser(QNetworkReply *pReply)
@@ -139,9 +134,9 @@ void WidgetImpl::HandlebtnEnterClicked()
 
 }
 
-void WidgetImpl::HandleReplyFinished()
+void WidgetImpl::HandleReplyFinished(QNetworkReply* pReply)
 {
-    QNetworkReply *pReply = qobject_cast<QNetworkReply*>(sender());
+    //QNetworkReply *pReply = qobject_cast<QNetworkReply*>(sender());
     JSONParser(pReply);
 
 }

@@ -19,6 +19,7 @@ SOURCES += \
     IArea.cpp \
     areafactory.cpp \
     carea.cpp \
+    connectmethod.cpp \
     judgepic.cpp \
     main.cpp \
     widget.cpp \
@@ -28,6 +29,7 @@ HEADERS += \
     IArea.h \
     areafactory.h \
     carea.h \
+    connectmethod.h \
     judgepic.h \
     widget.h \
     widgetimpl.h
@@ -35,7 +37,7 @@ HEADERS += \
 FORMS += \
     widget.ui
 
-#QMAKE_CXXFLAGS += utf-8
+#QMAKE_CXXFLAGS += \utf-8
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

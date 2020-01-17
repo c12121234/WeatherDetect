@@ -36,7 +36,7 @@ public slots:
     void HandlecbxAreaChanged(QString strText);
     void HandlecbxLocationChanged(QString strText);
     void HandlebtnEnterClicked();
-    void HandleReplyFinished();
+    void HandleReplyFinished(QNetworkReply* pReply);
     void HandleDescriptionTextChanged(QString strText);
     void ChangePicView(QString strText);
 signals:
