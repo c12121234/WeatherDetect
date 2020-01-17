@@ -21,6 +21,7 @@ public:
     void SettingAPIString();
     void TransferWeatherAPI(const QString& strAPI);
     void JSONParser(QNetworkReply* pReply);
+    QString ProcessWeatherText(const QString& strText);
     Ui::Widget* m_pUI;
     shared_ptr<IArea> m_spIArea;
     QString m_strLocation;
@@ -30,12 +31,14 @@ public:
     QString m_strStartTime;
     QString m_strAuthorization;
     QString m_strReplyText;
+    shared_ptr<QImage> m_spImg;
 public slots:
     void HandlecbxAreaChanged(QString strText);
     void HandlecbxLocationChanged(QString strText);
     void HandlebtnEnterClicked();
     void HandleReplyFinished();
     void HandleDescriptionTextChanged(QString strText);
+    void ChangePicView(QString strText);
 signals:
     void DescriptionTextChanged(QString strText);
 };

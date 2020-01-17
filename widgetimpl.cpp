@@ -2,6 +2,7 @@
 #include "ui_widget.h"
 #include "areafactory.h"
 #include "IArea.h"
+#include "judgepic.h"
 #include <QMessageBox>
 #include <vector>
 #include <QDebug>
@@ -18,10 +19,13 @@ WidgetImpl::WidgetImpl(QWidget *parent):
     QWidget(parent)
   , m_pUI(new Ui::Widget)
   , m_spIArea(nullptr)
+  , m_spImg(std::make_shared<QImage>())
 {
     m_pUI->setupUi(this);
     ConnectUIControl();
     SettingAPIString();
+    m_spImg->load(":/img/weathericon.png");
+    //m_pUI->labelPic->setPixmap(QPixmap::fromImage(*m_spImg).copy(73,113,187,187));
     emit m_pUI->cbxArea->currentTextChanged("宜蘭縣");
 }
 
@@ -36,6 +40,7 @@ void WidgetImpl::ConnectUIControl()
     connect(m_pUI->cbxLocation,&QComboBox::currentTextChanged,this,&WidgetImpl::HandlecbxLocationChanged);
     connect(m_pUI->btnEnter,&QPushButton::clicked,this,&WidgetImpl::HandlebtnEnterClicked);
     connect(this,&WidgetImpl::DescriptionTextChanged,this,&WidgetImpl::HandleDescriptionTextChanged);
+    connect(this,&WidgetImpl::DescriptionTextChanged,this,&WidgetImpl::ChangePicView);
 }
 
 void WidgetImpl::SettingAPIString()
@@ -89,6 +94,12 @@ void WidgetImpl::JSONParser(QNetworkReply *pReply)
     }
 }
 
+QString WidgetImpl::ProcessWeatherText(const QString &strText)
+{
+    QStringList strList = strText.split("。");
+    return strList[0];
+}
+
 void WidgetImpl::HandlecbxAreaChanged(QString strText)
 {
     m_spIArea = AreaFactory::CreateArea(strText);
@@ -122,7 +133,7 @@ void WidgetImpl::HandlebtnEnterClicked()
     QString strTextURL = QString("https://opendata.cwb.gov.tw/api/v1/rest/datastore/%1?Authorization=%2&locationName=%3"
             "&elementName=WeatherDescription&startTime=%4T%5").arg(strAreaAPI).arg(m_strAuthorization)
             .arg(m_strLocation).arg(m_strDateTime).arg(m_strStartTime);
-    QMessageBox::about(this,"url",strTextURL);
+    //QMessageBox::about(this,"url",strTextURL);
 
     TransferWeatherAPI(strTextURL);
 
@@ -139,4 +150,11 @@ void WidgetImpl::HandleDescriptionTextChanged(QString strText)
 {
     m_strReplyText = strText;
     m_pUI->labelWeather->setText(m_strReplyText);
+}
+
+void WidgetImpl::ChangePicView(QString strText)
+{
+    QString strWeather = ProcessWeatherText(strText);
+    std::pair<int,int> pTemp = JudgePic::JudgePicPos(strWeather);
+    m_pUI->labelPic->setPixmap(QPixmap::fromImage(*m_spImg).copy(pTemp.first,pTemp.second,187,187));
 }

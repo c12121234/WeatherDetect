@@ -19,6 +19,7 @@ SOURCES += \
     IArea.cpp \
     areafactory.cpp \
     carea.cpp \
+    judgepic.cpp \
     main.cpp \
     widget.cpp \
     widgetimpl.cpp
@@ -27,6 +28,7 @@ HEADERS += \
     IArea.h \
     areafactory.h \
     carea.h \
+    judgepic.h \
     widget.h \
     widgetimpl.h
 
@@ -42,3 +44,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     resource.qrc
+
+DISTFILES +=
